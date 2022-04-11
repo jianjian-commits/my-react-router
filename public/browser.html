@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+    </head>
+    <body>
+        <ul>
+            <li><a onclick="go('/a')">a</a></li>
+            <li><a onclick="go('/b')">b</a></li>
+            <li><a onclick="forward()">前进</a></li>
+            <li><a onclick="back()">后退</a></li>
+        </ul>
+        <div id="container"></div>
+    </body>
+    <script>
+
+        // 一刷新找不到资源了...
+
+        function redner() {
+            container.innerHTML = window.location.pathname
+        }
+
+        window.onpopstate = function() {
+            console.log('onpopstate');
+            redner()
+        }
+
+        const historyObj = window.history
+        const oldPushState = historyObj.pushState;
+
+        // 重写pushState方法 手动render
+        historyObj.pushState = function(state, title, path) {
+            oldPushState.apply(history, [...arguments])
+            redner()
+        }
+
+        function go(path) {
+            window.history.pushState({}, '', path)
+        }
+
+        function forward() {
+            console.log('forward...');
+            window.history.forward()
+        }
+
+        function back() {
+            window.history.back()
+        }
+
+    </script>
+</html>
